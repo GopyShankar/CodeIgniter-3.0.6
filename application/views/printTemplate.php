@@ -18,6 +18,7 @@
                 right: 0;
                 color: #aaa;
                 font-size: 0.9em;
+                /*background-color: white;*/
             }
             #header {
                 top: 0;
@@ -41,20 +42,24 @@
                 content: "Page " counter(page);
             }
             .content-table{
-                margin-top: 1.5cm;                
+                padding-top: 1.5cm;
+                padding-bottom: 1.5cm;
             }
+            /*.breaking {*/
+            /*    page-break-after: always;*/
+            /*}*/
             /*hr {
                 page-break-after: always;
                 border: 0;
             }*/
-            @media print {
+          /*  @media print {
                 #footer {
                     page-break-after: always;
                 }
                 tr{
                     page-break-inside: avoid;
                 }
-            }
+            }*/
        </style>
     </head>
     <body>
@@ -79,23 +84,14 @@
               <th>Points</th>
             </tr>
         </thead>
-            <?php for($i=0; $i<=100; $i++){?>
+            <?php $count=0; for($i=0; $i<=50; $i++){?>
             <tr>
-              <td>Jill</td>
-              <td>Smith</td>
-              <td>50</td>
+                <td><?php echo $count; ?></td>
+                <td>Jill</td>
+                <td>Smith</td>
+                <td>50</td>
             </tr>
-            <tr>
-              <td>Eve</td>
-              <td>Jackson</td>
-              <td>94</td>
-            </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>80</td>
-            </tr>
-            <?php } ?>
+            <?php $count++;} ?>
         </table>
     </body>
  </html>
