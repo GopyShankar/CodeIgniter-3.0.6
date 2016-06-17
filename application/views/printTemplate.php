@@ -18,7 +18,7 @@
                 right: 0;
                 color: #aaa;
                 font-size: 0.9em;
-                /*background-color: white;*/
+                background-color: white;
             }
             #header {
                 top: 0;
@@ -45,21 +45,6 @@
                 padding-top: 1.5cm;
                 padding-bottom: 1.5cm;
             }
-            /*.breaking {*/
-            /*    page-break-after: always;*/
-            /*}*/
-            /*hr {
-                page-break-after: always;
-                border: 0;
-            }*/
-          /*  @media print {
-                #footer {
-                    page-break-after: always;
-                }
-                tr{
-                    page-break-inside: avoid;
-                }
-            }*/
        </style>
     </head>
     <body>
@@ -79,9 +64,10 @@
        <table class="content-table" style="width:100%">
         <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Points</th>
+                <th>S no</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Points</th>
             </tr>
         </thead>
             <?php $count=0; for($i=0; $i<=50; $i++){?>
