@@ -4,11 +4,11 @@
        <title>Header and Footer example</title>
        <style type="text/css">
             @page {
-                margin: 2cm;
+                margin: 0;
             }
             body {
-                font-family: sans-serif;
-                margin: 0.5cm 0;
+                font-family: Helvetica;
+                margin: 1cm;
                 text-align: justify;
             }
             #header,
@@ -17,23 +17,29 @@
                 left: 0;
                 right: 0;
                 color: #aaa;
-                font-size: 0.9em;
                 background-color: white;
+                
             }
             #header {
                 top: 0;
-                height: 1cm;
+                height: 3.5cm;
                 border-bottom: 0.1pt solid #aaa;
+                margin-left: 1cm;
+                margin-right: 1cm;
             }
             #footer {
                 bottom: 0;
-                border-top: 0.1pt solid #aaa;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 2cm;
             }
             #header table,
             #footer table {
                 width: 100%;
                 border-collapse: collapse;
                 border: none;
+                position: absolute;
+                bottom: 0;
             }
             .page-number {
                 text-align: center;
@@ -42,8 +48,37 @@
                 content: "Page " counter(page);
             }
             .content-table{
-                padding-top: 1.5cm;
-                padding-bottom: 1.5cm;
+                padding-bottom: 2.5cm;
+                padding-top: 4cm;
+                font-size: 12px;
+                width : 100%;
+            }
+            .left-pane {
+                left: 0;
+                position: fixed;
+                top: 3.35cm;
+            }
+            .left-pane img{
+                height: 13.9cm;
+                width:0.8cm;
+            }
+            .logo {
+                height: 2.5cm;
+            }
+            #header td {
+                vertical-align: bottom;
+            }
+            .pageBottom {
+                top: 15px;
+                font-size: 12px;
+            }
+            @media print{
+                .left-pane img{
+                    height: 23.4cm;
+                }
+            }
+            .sedar-table-head{
+                background-color: #E4E1D4;
             }
        </style>
     </head>
@@ -52,18 +87,35 @@
           <table>
              <tbody>
                 <tr>
-                   <td>Example document</td>
-                   <td style="text-align: right;">Author</td>
+                   <td width="88%" style="text-align: center;"><b>Measurement</b></td>
+                   <td style="text-align: right;"><img class="logo" src="<?php echo base_url(); ?>application/assets/img/logo_sedar.png"></td>
                 </tr>
              </tbody>
           </table>
        </div>
+       <div class="left-pane">
+	    <img src="<?php echo base_url(); ?>application/assets/img/bar_sedar.png">
+        </div>
        <div id="footer">
-          <div class="page-number"></div>
+        <hr>
+          <table class="pageBottom" >
+                <tbody>
+                    <tr class="foot">
+                        <td class="labelFontSize"> Prepared By </td>
+                        <td>: MH_CR_UID </td>
+                        <td class="labelFontSize">Approved By</td>
+                        <td>: MH_APPROVE_UID</td>
+                        <td class="labelFontSize">Run Date</td>
+                        <td>: <?php echo date('d-M-Y-h:i:s A'); ?></td>
+                        <td class="removeBorder" style="text-align: right;">PageNo : 1 of 2</td>
+                    </tr>
+                </tbody>
+            </table>
        </div>
-       <table class="content-table" style="width:100%">
+       <div> 
+       <table class="content-table">
         <thead>
-            <tr>
+            <tr class="sedar-table-head">
                 <th>S no</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -78,6 +130,6 @@
                 <td>50</td>
             </tr>
             <?php $count++;} ?>
-        </table>
+        </table></div>
     </body>
  </html>
