@@ -18,32 +18,57 @@
 	    }
 	});
     }
-    var app = angular.module("todoApp" , []);
-    app.controller("TodoListController" , function(){
-	var todoList = this;
-	console.log(todoList);
-	todoList.todos = [{text:"learn angular",done:true},{text:"switch the company",done:false}];
-	todoList.addTodo = function(){
-	    todoList.todos.push({text:todoList.todoText, done:false});
-	    todoList.todoText = '';
-	};
-	todoList.remaining = function(){
-	    var count = 0;
-	    angular.forEach(todoList.todos, function(todo){
-		console.log(todo.done);
-		count += todo.done ? 0 : 1;
-		console.log(count);
-	    });
-	    return count;
-	};
-	todoList.archive = function() {
-	    var oldTodos = todoList.todos;
-	    todoList.todos = [];
-	    angular.forEach(oldTodos, function(todo) {
-	      if (!todo.done) todoList.todos.push(todo);
-	    });
-	};
-    });
+    //angular.module('todoApp', []).controller('TodoListController', function() {
+    //    var todoList = this;
+    //    todoList.todos = [{text:'learn angular', done:true}, {text:'build an angular app', done:false}];
+    //
+    //    todoList.addTodo = function() {
+    //      todoList.todos.push({text:todoList.todoText, done:false});
+    //      todoList.todoText = '';
+    //    };
+    //
+    //    todoList.remaining = function() {
+    //      var count = 0;
+    //      angular.forEach(todoList.todos, function(todo) {
+    //        count += todo.done ? 0 : 1;
+    //      });
+    //      return count;
+    //    };
+    // 
+    //    todoList.archive = function() {
+    //      var oldTodos = todoList.todos;
+    //      todoList.todos = [];
+    //      angular.forEach(oldTodos, function(todo) {
+    //        if (!todo.done) todoList.todos.push(todo);
+    //      });
+    //    };
+    //});
+var app = angular.module("todoApp" , []);
+app.controller("TodoListController" , function(){
+    var todoList = this;
+    console.log(todoList);
+    todoList.todos = [{text:"learn angular",done:true},{text:"switch the company",done:false}];
+    todoList.addTodo = function(){
+	todoList.todos.push({text:todoList.todoText, done:false});
+        todoList.todoText = '';
+    };
+    todoList.remaining = function(){
+	var count = 0;
+	angular.forEach(todoList.todos, function(todo){
+	    console.log(todo.done);
+	    count += todo.done ? 0 : 1;
+	    console.log(count);
+	});
+	return count;
+    };
+    todoList.archive = function() {
+	var oldTodos = todoList.todos;
+	todoList.todos = [];
+	angular.forEach(oldTodos, function(todo) {
+	  if (!todo.done) todoList.todos.push(todo);
+	});
+    };
+});
 </script>
 <div class="container">
     <input class="btn btn-success" type="button" value="print" data-target="#printPreview" data-toggle="modal">

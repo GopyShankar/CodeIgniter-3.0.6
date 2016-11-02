@@ -4,7 +4,7 @@
        <title>Header and Footer example</title>
        <style type="text/css">
             @page {
-                margin: 1cm;
+                margin: 0;
             }
             body {
                 font-family: Helvetica;
@@ -44,8 +44,11 @@
             .page-number {
                 text-align: center;
             }
+            .page-number:before {
+                content: "Page " counter(page);
+            }
             .content-table{
-                padding-bottom: 3cm;
+                padding-bottom: 2.5cm;
                 padding-top: 4cm;
                 font-size: 12px;
                 width : 100%;
@@ -73,26 +76,7 @@
                 .left-pane img{
                     height: 23.4cm;
                 }
-                .pageCount::after {
-                    counter-increment: section;
-                    content: counter(section);
-                }
-                .totalPage::before {
-                    counter-increment: pages;
-                    content: counter(pages);
-                }
-                .totalPage::after {
-                    counter-increment: pages;
-                    content: counter(pages);
-                }
             }
-            /*@page:right{*/
-            /*    @bottom-right {*/
-            /*      content: "Page " counter(page) " of " counter(pages);*/
-            /*      margin-bottom: 1cm;*/
-            /*    }*/
-            /*  }*/
-
             .sedar-table-head{
                 background-color: #E4E1D4;
             }
@@ -123,16 +107,13 @@
                         <td>: MH_APPROVE_UID</td>
                         <td class="labelFontSize">Run Date</td>
                         <td>: <?php echo date('d-M-Y-h:i:s A'); ?></td>
-                        <td class="removeBorder" style="text-align: right;">
-                            <div class='pageCount' style="float: left;" ></div>
-                            <div style="float: left;"> of </div>
-                            <div class='totalPage' style="float: left;" ></div>
-                        </td>
+                        <td class="removeBorder" style="text-align: right;">PageNo : 1 of 2</td>
                     </tr>
                 </tbody>
             </table>
        </div>
-       <table class="content-table" cellspacing="0" cellpadding="10" border="1">
+       <div> 
+       <table class="content-table">
         <thead>
             <tr class="sedar-table-head">
                 <th>S no</th>
@@ -149,6 +130,6 @@
                 <td>50</td>
             </tr>
             <?php $count++;} ?>
-        </table>
+        </table></div>
     </body>
  </html>
