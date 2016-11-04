@@ -1,5 +1,5 @@
-
-
+<link rel="stylesheet" href="application/assets/css/chosen.css">
+<script src="application/assets/js/chosen.jquery.min.js" type="text/javascript"></script>
 <style type="text/css">
 .glyphicon {
   top:0;
@@ -15,27 +15,37 @@
     position: fixed;
     right: 0;
 }
-   .chat-section {
+   /*.chat-section {
    bottom: 0;
    left: 0;
    margin: 0;
-   /*max-height: 300px;*/
+   max-height: 350px;
    position: fixed;
    right: 0;
    width:83%;
+   height: 319px;*/
+   /*border: 1px solid green;*/
+   /*}*/
+   .chat-section {
+   bottom: 0;
+   margin: 0;
+   /*max-height: 350px;*/
+   position: fixed;
+   right: 17.4%;
    height: 319px;
    /*border: 1px solid green;*/
    }
-   
 .chat_window {
     bottom: 0;
     left: auto;
-    max-height: 320px;
+    height: 100%;
     position: relative;
     float: right;
     width: 250px;
-    border-radius: 6px 6px 0 0;
     padding-left: 10px;
+}
+.top_menu.resize {
+    margin-top: 284px;
 }
 .message-section{
 border: 1px solid #ccc;
@@ -56,7 +66,7 @@ border-top-style: hidden;
    width: 100%;
    height:35px; 
     font-size: 15px;
-    border-radius: 6px 6px 0 0;
+    /*border-radius: 6px 6px 0 0;*/
     color: white;
     cursor: pointer;
    }
@@ -114,7 +124,7 @@ border-top-style: hidden;
    opacity: 0;
    }
    .messages .message.left .avatar {
-   background-color: #f5886e;
+    background-color: #fdbf68;
    float: left;
    }
    .messages .message.left .text_wrapper {
@@ -129,7 +139,7 @@ border-top-style: hidden;
    color: #c48843;
    }
    .messages .message.right .avatar {
-   background-color: #fdbf68;
+   background-image: url('uploads/<?php echo $this->session->userdata('userimage'); ?>');
    float: right;
    }
    .messages .message.right .text_wrapper {
@@ -147,18 +157,19 @@ border-top-style: hidden;
    .messages .message.appeared {
    opacity: 1;
    }
-   .messages .message .avatar {
+    .avatar {
    width: 40px;
    height: 40px;
    border-radius: 50%;
    display: inline-block;
+   background-size:100%;
    }
    .online{
    width: 10px;
    height: 10px;
    border-radius: 50%;
    display: inline-block;
-   background-color: green;
+   background-color: #42B72A;
 
    }
    .offline{
@@ -166,7 +177,7 @@ border-top-style: hidden;
    height: 10px;
    border-radius: 50%;
    display: inline-block;
-   background-color: green;
+   background-color: #797C80;
 
    }
    .messages .message .text_wrapper {
@@ -199,8 +210,28 @@ border-top-style: hidden;
    }
    .user_name{float:left;width:70%;}
    .closeChat{float:left;width:30%;text-align: right;}
-         
-         
+  .chatBar li,.chatBar a {
+    cursor: pointer;
+    }   
+    .nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.list-group-item {
+    padding: 5px;
+  }
+  .chatBar .col-sm-9 {
+    padding-top: 9px;
+    padding-left: 8px;
+}
+.chatBar .online , .chatBar .offline {
+    margin: 7px 5px 0 0;
+}
+   <?php foreach($users  as $user){ ?>
+    .u_avatar<?php echo $user['id']; ?>{
+      background-image: url("uploads/<?php echo $user['image']; ?>");
+      }
+    <?php } ?>  
 </style>
 <div class="container-fluid">
    <div class="row">
@@ -214,11 +245,20 @@ border-top-style: hidden;
             <?php } ?>
           </ul>
       </div> 
-      <div class="col-sm-2 chatBar col-xs-6">
-         <ul>
+      <div class="col-sm-2 chatBar col-xs-6 nopadding"><br>
+        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#myModal">Create New Group</button><br>
+         <ul class="list-group">
          <?php foreach($users  as $user){ $conv_result=$this->appMod->checkConvExists($user['id']); ?>
-            <li data-user-name="<?php echo $user['name']; ?>" data-user-id="<?php echo $user['id']; ?>" data-conv-id="<?php echo $conv_result; ?>" onclick="fetchConversation('<?php echo $user['id']; ?>','<?php echo $conv_result; ?>',$(this))" >
-               <?php echo $user['name'].' - '.$user['status'];  ?>
+            <li  class="list-group-item" data-user-name="<?php echo $user['name']; ?>" data-user-id="<?php echo $user['id']; ?>" data-conv-id="<?php echo $conv_result; ?>" onclick="fetchConversation('<?php echo $user['id']; ?>','<?php echo $conv_result; ?>',$(this))" >
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="avatar u_avatar<?php echo $user['id']; ?>"></div>
+                  </div>
+                  <div class="col-sm-9">
+                      <div class="pull-left"><?php echo $user['name'];  ?></div>
+                      <span class="pull-right <?php echo $user['status']; ?>"></span>
+                  </div>
+                </div>
             </li>
             <?php } ?>
          </ul>
@@ -281,9 +321,34 @@ border-top-style: hidden;
             </div>
          </div>
       </div>
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Create Group</h4>
+        </div>
+        <div class="modal-body">
+        <div>
+          <label>Choose group members</label>
+           <select data-placeholder="Choose group members..." class="chosen-select" multiple style="width:350px;" tabindex="4">
+            <option value=""></option>
+            <?php foreach($users  as $user){ ?>
+            <option value="<?php echo $user['id']; ?>"><?php echo $user['name']; ?></option>
+            <?php } ?>
+          </select><br>
+          <div><button class="btn btn-success" onclick="createGroup()" data-dismiss="modal">Save</button></div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <script type="text/javascript">
    $(document).ready(function(){
-      setInterval(function(){ checkForNewMessage(); }, 2000);      
+      setInterval(function(){ checkForNewMessage(); }, 1500);      
    });
    function updateConvFlag(conv_id,flag){
      $.ajax({
@@ -303,11 +368,12 @@ border-top-style: hidden;
    (function () {
      var Message;
      Message = function (arg) {
-         this.text = arg.text, this.message_side = arg.message_side, this.message_section=arg.message_section;
+         this.text = arg.text, this.message_side = arg.message_side, this.message_section=arg.message_section, this.created_by=arg.created_by;
          this.draw = function (_this) {
              return function () {
                  var $message;
                  $message = $($('.message_template').clone().html());
+                 $message.find('.avatar').addClass(this.created_by);
                  $message.addClass(_this.message_side).find('.text').html(_this.text);
                  this.message_section.append($message);
                  return setTimeout(function () {
@@ -320,14 +386,14 @@ border-top-style: hidden;
      $(function () {
         var sesion_id='<?php echo $this->session->userdata('userid'); ?>';
         console.log('sesion_id:',sesion_id);
-         var getMessageText, message_side, sendMessage;
+         var getMessageText, message_side, sendMessage, created_by;
          message_side = 'right';
          getMessageText = function ($element) {
              var $message_input;
              $message_input =$element.parents('.input-group').find('.message_input');
              return $message_input.val();
          };
-         sendMessage = function (text,message_side,$element) {
+         sendMessage = function (text,message_side,$element,created_by) {
               $parent=$element.parents('.chat_window');
               $message_input =$parent.find('.message_input');
               $messages = $parent.find('.messages');
@@ -342,7 +408,8 @@ border-top-style: hidden;
              message = new Message({
                  text: text,
                  message_side: message_side,
-                 message_section:$messages
+                 message_section:$messages,
+                 created_by:'u_avatar'+created_by,
              });
              message.draw();
              return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
@@ -364,12 +431,22 @@ border-top-style: hidden;
                     }
                     console.log(val,lr);
                     var messages=$('.conv_'+val.conv_id);
-                    if(messages.html()!=null){
-                    sendMessage( val.msg, lr, $('.conv_'+val.conv_id));                     
+                    if(messages.is(':visible')){
+                      sendMessage( val.msg, lr, $('.conv_'+val.conv_id), val.created_by);  
+                    }else if(messages.html()!=null){
+                      messages.parents('.chat_window').show();
+                      sendMessage( val.msg, lr, $('.conv_'+val.conv_id), val.created_by);                     
                     }else{
-                      fetchConversation(userId,val.conv_id);
+                      var userId=val.convn_btwn;
+                      userId=userId.replace('-'+sesion_id+'-','');
+                      userId=userId.replace('-','');
+                      console.log(userId,$("li[data-user-id="+userId+"]"));
+                      $('div.user_'+userId).remove();
+                      fetchConversation(userId,val.conv_id,val.type);
+                      var arr="fetchConversation('"+userId+"','"+val.conv_id+"',$(this))";
+                      $("li[data-user-id="+userId+"]").attr('onclick',arr);
                     }
-                    updateSeenBy(val.id,val.seen_by); 
+                    updateDeliverdTo(val.id,val.delivered_to); 
                     // $("#" + i).append(document.createTextNode(" - " + val));
 
                   });
@@ -382,16 +459,9 @@ border-top-style: hidden;
          });
          $(document).on('keyup','.message_input', function(e){
              if (e.which === 13) {
-                  $(this).next().click();
+                  $(this).next().find('button').click();
              }
          });
-         sendMessage('Hello Philip! :)','right', $('.messages:visible'));
-         setTimeout(function () {
-             return sendMessage('Hi Sandy! How are you?','left', $('.messages:visible'));
-         }, 1000);
-         return setTimeout(function () {
-             return sendMessage('I\'m fine, thank you!','right', $('.messages:visible'));
-         }, 2000);
      });
    }.call(this));
 
@@ -402,9 +472,7 @@ border-top-style: hidden;
 $('.chatBar').css({ height: $(window).innerHeight() })
 
   $(document).on('click','.top_menu', function(){
-    
-    $(this).parent().find('.message-section, .bottom_wrapper').toggle();
-
+    $(this).toggleClass("resize").nextAll('.message-section, .bottom_wrapper').toggle();
   });
   $(document).on('click','.closeIt', function(){
     
@@ -413,11 +481,11 @@ $('.chatBar').css({ height: $(window).innerHeight() })
   });
 
   function fetchConversation(userId,newCon,$this){ 
-    console.log(userId,newCon,$this);
-    $userName=$this.attr('data-user-name');
+    console.log(userId,newCon);
     if($('.user_'+userId+'').html()!=null){
       showConv($('.user_'+userId+''));
     }else if(newCon=='newconversation'){alert();
+      $userName=$this.attr('data-user-name');
       $clone=$('.chat_template').clone().removeClass('chat_template').addClass('chat_window').addClass('user_'+userId+'').appendTo('.chat-section').show();
       $clone.find('.user_name').text($userName);
       $clone.find('.send_message').attr('onclick','insertConv('+userId+',$(this))');
@@ -427,14 +495,19 @@ $('.chatBar').css({ height: $(window).innerHeight() })
          type: "POST",
          data:{userId:userId,convId:newCon},
          success:function(result){
-          $('.chat-section').append(result);
+         $messages=$('.chat-section').append(result).find('.messages:visible').last();
+         console.log($messages);
+         $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
          }
        });
     }
   }
   function showConv($element){
       $element.show();
+      $element.children().removeClass('resize');
       $element.find('.message-section, .bottom_wrapper').show();
+      $messages=$element.find('.messages');
+      $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
   }
   function insertConv(user_id,$this){
     $msg=$this.parent().prev().val();
@@ -462,16 +535,41 @@ $('.chatBar').css({ height: $(window).innerHeight() })
        }
      });
   }
-  function updateSeenBy(id,seen_by){
+  function updateDeliverdTo(id,delivered_to){
     $.ajax({
-       url:"<?php echo base_url('appCtr/updateSeenBy');?>",
+       url:"<?php echo base_url('appCtr/updateDeliverdTo');?>",
        type: "POST",
-       data:{id:id,seen_by:seen_by},
+       data:{id:id,delivered_to:delivered_to},
        success:function(result){
          console.log(result);
          // setTimeout(function(){ checkForNewMessage(); }, 2000);
        }
      });
   }
+  function createGroup(){
+    var group=$('.chosen-select').val();
+    $.ajax({
+      url:"<?php echo base_url('appCtr/createGroup'); ?>",
+      type:"POST",
+      data:{group:group},
+      success:function(result){
+         $messages=$('.chat-section').append(result).find('.messages:visible').last();
+         $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
+      }
+    });
+  }
 </script>
 
+<script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+    $('.chosen-container').css('width','100%');
+</script>

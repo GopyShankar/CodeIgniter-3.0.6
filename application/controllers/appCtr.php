@@ -26,7 +26,8 @@ class appCtr extends CI_Controller {
         $userDetails=$this->appMod->fetchUser($user_id);
         $user_name=$userDetails[0]['name'];
         $user_status=$userDetails[0]['status'];
-        $result =$this->appMod->fetchConversation($user_id,$convId); ?>
+        $user_image=$userDetails[0]['image'];
+        $result =$this->appMod->fetchConversation($convId); ?>
         <div class="chat_window user_<?php echo $user_id;?>">
          <div class="top_menu">
          <div class="user_name"><div class="<?php echo $user_status;?>"></div><?php echo $user_name; ?></div>
@@ -39,12 +40,12 @@ class appCtr extends CI_Controller {
          <div class="message-section">
           <ul class="messages conv_<?php echo $convId;?>">
           <?php foreach ($result as $key => $value) {  ?>
-                <li class="message <?php if($value['created_by']==$id){echo "right";}else{echo "left";} ?> appeared">
-                    <div class="avatar"></div>
-                    <div class="text_wrapper">
-                       <div class="text"><?php echo $value['msg'];?></div>
-                    </div>
-                </li>
+            <li class="message <?php if($value['created_by']==$id){echo "right";}else{echo "left";} ?> appeared">
+                <div class="avatar u_avatar<?php echo $value['created_by']; ?>"></div>
+                <div class="text_wrapper">
+                   <div class="text"><?php echo $value['msg'];?></div>
+                </div>
+            </li>
             <?php } ?>            
          </ul>
          </div>
@@ -64,7 +65,12 @@ class appCtr extends CI_Controller {
     }
     function user($id,$name){
         $this->session->set_userdata('userid',$id);
+        $sql="SELECT * FROM users WHERE id='$id'";
+        $result=$this->db->query($sql, $return_object = TRUE)->result_array();
+        $name=$result[0]['name'];
+        $image=$result[0]['image'];
         $this->session->set_userdata('userName',$name);
+        $this->session->set_userdata('userimage',$image);
         redirect('appCtr');
     }
     function checkForNewMessage(){
@@ -72,19 +78,12 @@ class appCtr extends CI_Controller {
         echo json_encode($result);
         exit; 
     }
-    function updateConvFlag(){        
-        $conv_id=$_POST['conv_id'];
-        $flag=$_POST['flag'];
-        $this->appMod->updateConvFlag($conv_id,$flag);
-    }
     function updateConv(){
         $conv_id=$_POST['convId'];
         $created_by=$this->session->userdata('userid');
         $msg=$_POST['msg'];
-        $this->appMod->updateConvFlag($conv_id,'Y');
-        $seen_by='-'.$created_by.'-';
-        $this->appMod->insertMessage($conv_id,$created_by,$msg,$seen_by);
-        $this->appMod->updateConvFlag($conv_id,'Y');
+        $delivered_to='-'.$created_by.'-';
+        $this->appMod->insertMessage($conv_id,$created_by,$msg,$delivered_to);
     }
     function insertConv(){
         $user_id=$_POST['user_id'];
@@ -93,32 +92,63 @@ class appCtr extends CI_Controller {
         $arrayName = array($user_id , $created_by);
         sort($arrayName);
         $convn_btwn='-'.implode("-",$arrayName).'-';
-        $conv_id=$this->appMod->insertConv($convn_btwn,$created_by);
-        $seen_by='-'.$created_by.'-';
+        $conv_id=$this->appMod->insertConv($convn_btwn,$created_by,'P');
+        $delivered_to='-'.$created_by.'-';
         if($conv_id){
-            $result=$this->appMod->insertMessage($conv_id,$created_by,$msg,$seen_by);
-            $this->appMod->updateConvFlag($conv_id,'Y');
+            $result=$this->appMod->insertMessage($conv_id,$created_by,$msg,$delivered_to);
         }
         if($result){
             echo $conv_id;
         }
     }
-    function updateSeenBy(){
+    function updateDeliverdTo(){
         $ses_id=$this->session->userdata('userid');
         $id=$_POST['id'];
-        $seen_by=$_POST['seen_by'];
-        $seen_by=explode('-', $seen_by);
-        $seen_by=array_values(array_filter($seen_by));
-        if(in_array($ses_id, $seen_by)){
+        $delivered_to=$_POST['delivered_to'];
+        $delivered_to=explode('-', $delivered_to);
+        $delivered_to=array_values(array_filter($delivered_to));
+        if(in_array($ses_id, $delivered_to)){
             return true;
         }else{
-            $seen_by[]=$ses_id;
+            $delivered_to[]=$ses_id;
         }
-        sort($seen_by);
-        echo $seen_by='-'.implode("-",$seen_by).'-';
-        $this->appMod->updateSeenBy($id,$seen_by);
+        sort($delivered_to);
+        echo $delivered_to='-'.implode("-",$delivered_to).'-';
+        $this->appMod->updateDeliverdTo($id,$delivered_to);
     }
+    function createGroup(){
+        $ses_id=$this->session->userdata('userid');
+        $group=$_POST['group'];
+        $group[]=$ses_id;
+        sort($group);
+        $ids='-'.implode("-",$group).'-';
+        $conv_id=$this->appMod->insertConv($ids,$ses_id,'G'); ?>
+        <div class="chat_window">
+         <div class="top_menu">
+         <div class="user_name"><div class="online"></div>New group</div>
+         <div class="closeChat"> 
+            <div class="btn-group">
+               <div class="button closeIt glyphicon glyphicon-remove"></div>
+            </div>
+          </div>
+         </div>
+         <div class="message-section">
+          <ul class="messages conv_<?php echo $conv_id; ?>"></ul>
+         </div>
+         <div class="bottom_wrapper clearfix">
+            <div class="message_input_wrapper">
+              <div class="input-group">
+                <input class="form-control message_input" placeholder="Type here..." type="text">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary send_message glyphicon glyphicon-send" type="button" onclick="updateConv('<?php echo $conv_id; ?>',$(this))"></button>
+                </span>
+              </div>
+            </div>
+         </div>
+      </div>
+        <?php
 
+    }
     
 }
 
