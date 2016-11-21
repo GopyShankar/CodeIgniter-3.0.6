@@ -149,7 +149,9 @@ class appCtr extends CI_Controller {
         <?php
 
     }
-    
+    function angularDragAndDrop(){
+        $this->load->view('angularDragAndDrop',$result);
+    }
 }
 
 ?>

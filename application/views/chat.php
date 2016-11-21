@@ -251,10 +251,10 @@ border-top-style: hidden;
          <?php foreach($users  as $user){ $conv_result=$this->appMod->checkConvExists($user['id']); ?>
             <li  class="list-group-item" data-user-name="<?php echo $user['name']; ?>" data-user-id="<?php echo $user['id']; ?>" data-conv-id="<?php echo $conv_result; ?>" onclick="fetchConversation('<?php echo $user['id']; ?>','<?php echo $conv_result; ?>',$(this))" >
                 <div class="row">
-                  <div class="col-sm-3">
+                  <div class="col-sm-3 col-xs-2">
                     <div class="avatar u_avatar<?php echo $user['id']; ?>"></div>
                   </div>
-                  <div class="col-sm-9">
+                  <div class="col-sm-9 col-xs-9">
                       <div class="pull-left"><?php echo $user['name'];  ?></div>
                       <span class="pull-right <?php echo $user['status']; ?>"></span>
                   </div>
@@ -484,11 +484,13 @@ $('.chatBar').css({ height: $(window).innerHeight() })
     console.log(userId,newCon);
     if($('.user_'+userId+'').html()!=null){
       showConv($('.user_'+userId+''));
-    }else if(newCon=='newconversation'){alert();
+    }else if(newCon=='newconversation'){
       $userName=$this.attr('data-user-name');
       $clone=$('.chat_template').clone().removeClass('chat_template').addClass('chat_window').addClass('user_'+userId+'').appendTo('.chat-section').show();
       $clone.find('.user_name').text($userName);
       $clone.find('.send_message').attr('onclick','insertConv('+userId+',$(this))');
+      $messages=$clone.find('.messages');
+      $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
     }else{
       $.ajax({
          url:"<?php echo base_url('appCtr/fetchConversation');?>",
