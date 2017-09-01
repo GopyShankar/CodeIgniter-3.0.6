@@ -10,6 +10,7 @@ class vendorCtr extends CI_Controller {
     
     function index()
     {
+    	echo "branch rp2";
 	if(isset($_POST['auth'])){
 	    $this->setsession();
 	}else{
