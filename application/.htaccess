@@ -1,15 +1,7 @@
-SetEnv APPLICATION_ENV development
-
-RewriteEngine on
-RewriteBase /CodeIgniter-3.0.6
-
-RewriteCond %{REQUEST_FILENAME} -s [OR]
-RewriteCond %{REQUEST_FILENAME} -l [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^.*$ - [NC,L]
-RewriteRule ^.*$ index.php [NC,L]
-
-
-php_value memory_limit 128M
-php_value upload_max_filesize 64M
-php_value max_input_vars 40000
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /codeigniter
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
+</IfModule>
